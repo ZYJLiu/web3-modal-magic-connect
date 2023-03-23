@@ -20,6 +20,7 @@ import type {
 const contractConfig = {
   address: "0xbfe421739A996EcCADb6074f3dF2f0fF5e563415",
   abi,
+  chainId: 5,
 }
 
 const Home: NextPage = () => {
@@ -36,9 +37,9 @@ const Home: NextPage = () => {
       ? {
           args: [
             address,
-            {
-              gasLimit: 1_000_000,
-            },
+            // {
+            //   gasLimit: 1_000_000,
+            // },
           ],
           onSettled(data, error) {
             console.log("Settled", { data, error })
