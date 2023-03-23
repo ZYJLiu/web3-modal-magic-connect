@@ -32,7 +32,19 @@ const Home: NextPage = () => {
   const { config: contractWriteConfig } = usePrepareContractWrite({
     ...contractConfig,
     functionName: "safeMint",
-    ...(address ? { args: [address] } : {}),
+    ...(address
+      ? {
+          args: [
+            address,
+            {
+              gasLimit: 1_000_000,
+            },
+          ],
+          onSettled(data, error) {
+            console.log("Settled", { data, error })
+          },
+        }
+      : {}),
   } as UsePrepareContractWriteConfig)
 
   const {
