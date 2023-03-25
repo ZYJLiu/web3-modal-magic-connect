@@ -14,11 +14,13 @@ import { createClient, configureChains, WagmiConfig } from "wagmi"
 import { goerli } from "wagmi/chains"
 import { publicProvider } from "wagmi/providers/public"
 
+// Configure chains, providers, and webSocketProvider
 const { chains, provider, webSocketProvider } = configureChains(
-  [goerli],
+  [goerli], // Use only the Goerli test network for this demo
   [publicProvider()]
 )
 
+// Rainbowkit default wallets
 const { wallets } = getDefaultWallets({
   appName: "RainbowKit Mint NFT Demo",
   chains,
@@ -28,6 +30,8 @@ const demoAppInfo = {
   appName: "RainbowKit Mint NFT Demo",
 }
 
+// Create connectors for wallets
+// Include Magic Connect to the list of wallets to display in wallet selector modal
 const connectors = connectorsForWallets([
   {
     groupName: "Magic",
@@ -40,8 +44,9 @@ const connectors = connectorsForWallets([
   },
 ])
 
+// Create the Wagmi client
 const wagmiClient = createClient({
-  autoConnect: true,
+  autoConnect: true, // autoconnect not working correctly with Magic Connect
   connectors,
   provider,
   webSocketProvider,

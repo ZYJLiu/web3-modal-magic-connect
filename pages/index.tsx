@@ -17,6 +17,7 @@ import type {
   UseContractWriteConfig,
 } from "wagmi"
 
+// Define NFT minting contract configuration
 const contractConfig = {
   address: "0xbfe421739A996EcCADb6074f3dF2f0fF5e563415",
   abi,
@@ -30,6 +31,7 @@ const Home: NextPage = () => {
   const [totalMinted, setTotalMinted] = React.useState(0)
   const { isConnected, address } = useAccount()
 
+  // Prepare the contract "safemint" function
   const { config: contractWriteConfig } = usePrepareContractWrite({
     ...contractConfig,
     functionName: "safeMint",
@@ -48,6 +50,7 @@ const Home: NextPage = () => {
       : {}),
   } as UsePrepareContractWriteConfig)
 
+  // Use wagmi contract write hook for minting
   const {
     data: mintData,
     write: safeMint,
@@ -56,12 +59,14 @@ const Home: NextPage = () => {
     error: mintError,
   } = useContractWrite(contractWriteConfig as UseContractWriteConfig)
 
+  // Use wagmi contract read hook for fetching total supply (number of NFTs minted)
   const { data: totalSupplyData }: any = useContractRead({
     ...contractConfig,
     functionName: "totalSupply",
     watch: true,
   } as UseContractReadConfig)
 
+  // Use wagmi wait for transaction hook to listen for NFT mint transaction completion
   const {
     data: txData,
     isSuccess: txSuccess,
@@ -70,6 +75,7 @@ const Home: NextPage = () => {
     hash: mintData?.hash,
   })
 
+  // Update the total minted NFTs when totalSupplyData changes
   React.useEffect(() => {
     if (totalSupplyData) {
       setTotalMinted(totalSupplyData.toNumber())
