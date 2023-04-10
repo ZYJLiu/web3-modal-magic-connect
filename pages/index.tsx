@@ -19,9 +19,9 @@ import type {
 
 // Define NFT minting contract configuration
 const contractConfig = {
-  address: "0xbfe421739A996EcCADb6074f3dF2f0fF5e563415",
+  address: "0xf4759a2bf9a8b6dc8318eFc53E6E27B452C42310",
   abi,
-  chainId: 5,
+  chainId: 11155111,
 }
 
 const Home: NextPage = () => {
@@ -151,11 +151,12 @@ const Home: NextPage = () => {
                 </p>
                 <p style={{ marginBottom: 6 }}>
                   View on{" "}
-                  <a href={`https://goerli.etherscan.io/tx/${mintData?.hash}`}>
+                  <a href={`https://sepolia.etherscan.io/tx/${mintData?.hash}`}>
                     Etherscan
                   </a>
                 </p>
-                <p>
+                {/* Sepolia currently not supported on Opensea */}
+                {/* <p>
                   View on{" "}
                   <a
                     href={`https://testnets.opensea.io/assets/goerli/${
@@ -164,7 +165,7 @@ const Home: NextPage = () => {
                   >
                     Opensea
                   </a>
-                </p>
+                </p> */}
               </div>
             </BackCard>
           </FlipCard>
