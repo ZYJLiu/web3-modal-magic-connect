@@ -1,6 +1,6 @@
 import React from "react"
 import Image from "next/image"
-import { ConnectButton } from "@rainbow-me/rainbowkit"
+import { Web3Button, Web3NetworkSwitch } from "@web3modal/react"
 import type { NextPage } from "next"
 import {
   useAccount,
@@ -93,22 +93,26 @@ const Home: NextPage = () => {
             <p style={{ margin: "12px 0 24px" }}>
               {totalMinted} minted so far!
             </p>
-            <ConnectButton />
-
+            <div>
+              <Web3Button />
+            </div>
+            <div style={{ marginTop: 12 }}>
+              <Web3NetworkSwitch />
+            </div>
             {mintError && (
-              <p style={{ marginTop: 24, color: "#FF6257" }}>
+              <p style={{ marginTop: 12, color: "#FF6257" }}>
                 Error: {mintError.message}
               </p>
             )}
             {txError && (
-              <p style={{ marginTop: 24, color: "#FF6257" }}>
+              <p style={{ marginTop: 12, color: "#FF6257" }}>
                 Error: {txError.message}
               </p>
             )}
 
             {mounted && isConnected && !isMinted && (
               <button
-                style={{ marginTop: 24 }}
+                style={{ marginTop: 12 }}
                 disabled={!safeMint || isMintLoading || isMintStarted}
                 className="button"
                 data-mint-loading={isMintLoading}
@@ -134,7 +138,7 @@ const Home: NextPage = () => {
                 alt="RainbowKit Demo NFT"
               />
               <h1 style={{ marginTop: 24 }}>Rainbow NFT</h1>
-              <ConnectButton />
+              <Web3Button />
             </FrontCard>
             <BackCard isCardFlipped={isMinted}>
               <div style={{ padding: 24 }}>

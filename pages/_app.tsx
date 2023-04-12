@@ -1,64 +1,54 @@
 import "../styles/global.css"
-import "@rainbow-me/rainbowkit/styles.css"
 import type { AppProps } from "next/app"
+import { EthereumClient, w3mConnectors, w3mProvider } from "@web3modal/ethereum"
+import { Web3Modal } from "@web3modal/react"
+import { configureChains, createClient, WagmiConfig } from "wagmi"
+import { sepolia, goerli } from "wagmi/chains"
+import { MagicConnectConnector } from "wagmi-magic-connect"
 
-import {
-  RainbowKitProvider,
-  getDefaultWallets,
-  connectorsForWallets,
-} from "@rainbow-me/rainbowkit"
-import { argentWallet, trustWallet } from "@rainbow-me/rainbowkit/wallets"
-import { magicConnectConnector } from "../connector/magicConnect"
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!
+const chains = [sepolia, goerli]
+const { provider } = configureChains(chains, [w3mProvider({ projectId })])
 
-import { createClient, configureChains, WagmiConfig } from "wagmi"
-import { sepolia } from "wagmi/chains"
-import { publicProvider } from "wagmi/providers/public"
-
-// Configure chains, providers, and webSocketProvider
-const { chains, provider, webSocketProvider } = configureChains(
-  [sepolia], // Use only the Sepolia test network for this demo
-  [publicProvider()]
-)
-
-// Rainbowkit default wallets
-const { wallets } = getDefaultWallets({
-  appName: "RainbowKit Mint NFT Demo",
-  chains,
-})
-
-const demoAppInfo = {
-  appName: "RainbowKit Mint NFT Demo",
-}
-
-// Create connectors for wallets
-// Include Magic Connect to the list of wallets to display in wallet selector modal
-const connectors = connectorsForWallets([
-  {
-    groupName: "Magic",
-    wallets: [magicConnectConnector({ chains })],
-  },
-  ...wallets,
-  {
-    groupName: "Other",
-    wallets: [argentWallet({ chains }), trustWallet({ chains })],
-  },
-])
-
-// Create the Wagmi client
 const wagmiClient = createClient({
-  autoConnect: true, // autoconnect not working correctly with Magic Connect
-  connectors,
+  autoConnect: true,
+  connectors: [
+    new MagicConnectConnector({
+      chains: chains,
+      options: {
+        apiKey: process.env.NEXT_PUBLIC_MAGICKEY!,
+        magicSdkConfiguration: {
+          network: {
+            rpcUrl: process.env.NEXT_PUBLIC_SEPOLIA_RPC!,
+            chainId: 11155111,
+          },
+        },
+      },
+    }),
+    ...w3mConnectors({ chains, version: 2, projectId }),
+  ],
   provider,
-  webSocketProvider,
 })
+
+const ethereumClient = new EthereumClient(wagmiClient, chains)
+
+const walletImages = {
+  magic: "https://svgshare.com/i/iJK.svg",
+}
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider appInfo={demoAppInfo} chains={chains}>
+    <>
+      <WagmiConfig client={wagmiClient}>
         <Component {...pageProps} />
-      </RainbowKitProvider>
-    </WagmiConfig>
+      </WagmiConfig>
+
+      <Web3Modal
+        projectId={projectId}
+        ethereumClient={ethereumClient}
+        walletImages={walletImages}
+      />
+    </>
   )
 }
 
